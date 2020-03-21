@@ -49,9 +49,9 @@ public class Main {
             for(int j = i+1; j<re.size();j++){
                 ArrayList<String> arrayListTemp = re.get(j);
                 if(ifContain(arrayList,arrayListTemp)){
-                    re.remove(arrayList);
-                }else if(ifContain(arrayListTemp,arrayList)){
                     re.remove(arrayListTemp);
+                }else if(ifContain(arrayListTemp,arrayList)){
+                    re.remove(arrayList);
                 }
             }
         }
