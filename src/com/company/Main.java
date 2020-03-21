@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        String msg = "((a+b)*((c+d)*(e+f)))";
+        String msg = "(a+b*c)*(b+d*e)";
         String result = getResult(msg);
         System.out.println("去括号结果：result="+result);
         ArrayList<String> slist = new ArrayList<>();
@@ -140,8 +140,6 @@ public class Main {
     }
 
     private static String multiWon(String a1,String a2){
-        a1 = "a+b";
-        a2 = "c*e+c*f+d*e+d*f";
         List<List<String>> list = new ArrayList<List<String>>();
         List<String> listSub1 = new ArrayList<String>();
         List<String> listSub2 = new ArrayList<String>();
@@ -212,10 +210,6 @@ public class Main {
             }
         }
     }
-
-
-
-
 
     private static int getPriority(String s) throws Exception {
         if(s==null) {
