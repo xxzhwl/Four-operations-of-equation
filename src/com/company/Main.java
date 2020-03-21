@@ -5,6 +5,13 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @PackageName:com.company
+ * @ClassName:Mains
+ * @Description:
+ * @Author:ZWL
+ * @Date:2020/3/19 16：56
+ */
 public class Main {
     public static void main(String[] args) throws Exception {
         String msg = "(a+b*c)*(b+d*e)";
@@ -71,7 +78,7 @@ public class Main {
             i++;
         }
         return result;
-    }
+    }//去除同操作的中间事件
 
     private static boolean ifContain(ArrayList<String> s1,ArrayList<String> s2){
         boolean flag = true;
@@ -81,7 +88,7 @@ public class Main {
             }
         }
         return flag;
-    }
+    }//检查两个中间事件是否有重复
 
     private static ArrayList<String> removeRepeat(ArrayList<String> slist){
         ArrayList<String> result = new ArrayList<>();
@@ -119,7 +126,7 @@ public class Main {
             result.add(sresult);
         }
         return result;
-    }
+    }//删除单个中间事件中可能重复的基本事件
 
 
     private static String unknowCal(String a1, String a2, char operator) throws Exception {
@@ -182,7 +189,7 @@ public class Main {
                 if(temp.equals("(")) {//遇到左括号，直接入符号栈
                     operator.push(temp);
 //                    System.out.println("符号栈更新："+operator);
-                }else if(temp.equals(")")){//遇到右括号，"符号栈弹栈取栈顶符号b，数字栈弹栈取栈顶数字a1，数字栈弹栈取栈顶数字a2，计算a2 b a1 ,将结果压入数字栈"，重复引号步骤至取栈顶为左括号，将左括号弹出
+                }else if(temp.equals(")")){//遇到右括号，"符号栈弹栈取栈顶符号b，未知栈弹栈取栈顶数字a1，未知栈弹栈取栈顶未知字符串a2，计算a2 b a1 ,将结果压入未知栈"，重复引号步骤至取栈顶为左括号，将左括号弹出
                     String b = null;
                     while(!(b = operator.pop()).equals("(")) {
 //                        System.out.println("符号栈更新："+operator);
@@ -213,7 +220,7 @@ public class Main {
 
         }
 
-        while(operator.peek()!=null) {//遍历结束后，符号栈数字栈依次弹栈计算，并将结果压入数字栈
+        while(operator.peek()!=null) {//遍历结束后，符号栈未知栈依次弹栈计算，并将结果压入未知栈
             String a1 = unknown.pop();
             String a2 = unknown.pop();
             String b = operator.pop();
