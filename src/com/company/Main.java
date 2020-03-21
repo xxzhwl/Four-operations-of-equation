@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        String msg = "(a+b*c)*(b+d*e)";
+        String msg = "((a+b)*((c+d)*(e+f)))";
         String result = getResult(msg);
         System.out.println("去括号结果：result="+result);
         ArrayList<String> slist = new ArrayList<>();
@@ -28,8 +28,6 @@ public class Main {
         slist.add(result);
         ArrayList<String> noRepeat = removeRepeat(slist);
         System.out.println("最终化简结果：result="+getResult(noRepeat));
-
-
     }
 
     private static String getResult(ArrayList<String> noRepeat){
@@ -134,36 +132,95 @@ public class Main {
             case '+':
                 return a1 + "+" + a2;
             case '*':
-                return multi(a1,a2);
+                return multiWon(a1,a2);
             default:
                 break;
         }
         throw new Exception("illegal operator!");
     }
 
-    public static String multi(String a1,String a2){
-        if(a1.contains("+")){
-            String left1 = a1.substring(0,a1.indexOf("+"));
-            String right1 = a1.substring(a1.indexOf("+")+1);
-            if(a2.contains("+")){
-                String left2 = a2.substring(0,a2.indexOf("+"));
-                String right2 = a2.substring(a2.indexOf("+")+1);
-                return left1+"*"+left2+"+"+left1+"*"+right2+"+"+right1+"*"+left2+"+"+right1+"*"+right2;
-            }else{
-                return left1+"*"+a2+"+"+right1+"*"+a2;
-            }
-        }else if(a2.contains("+")){
-            String left2 = a2.substring(0,a2.indexOf("+"));
-            String right2 = a2.substring(a2.indexOf("+")+1);
-            return a1+"*"+left2+"+"+a1+"*"+right2;
+    private static String multiWon(String a1,String a2){
+        a1 = "a+b";
+        a2 = "c*e+c*f+d*e+d*f";
+        List<List<String>> list = new ArrayList<List<String>>();
+        List<String> listSub1 = new ArrayList<String>();
+        List<String> listSub2 = new ArrayList<String>();
+        while(a1.contains("+")){
+            int x = a1.indexOf("+");
+            String temp = a1.substring(0,x);
+            String temp1 = a1.substring(0,x+1);
+            a1 = a1.replace(temp1,"");
+            listSub1.add(temp);
         }
-        else{
-            return a1 + "*" + a2;
+        listSub1.add(a1);
+        while(a2.contains("+")){
+            int x = a2.indexOf("+");
+            String temp = a2.substring(0,x);
+            String temp1 = a2.substring(0,x+1);
+            a2 = a2.replace(temp1,"");
+            listSub2.add(temp);
+        }
+        listSub2.add(a2);
+        list.add(listSub1);
+        list.add(listSub2);
+
+        List<List<String>> resultD = new ArrayList<List<String>>();
+        descartes(list, resultD, 0, new ArrayList<String>());
+        String result = "";
+        int i = 0;
+        for(List<String> arrayLists : resultD){
+            String stemp = "";
+            int j = 0;
+            for(String s : arrayLists){
+                if(j==0){
+                    stemp = s;
+                }else{
+                    stemp = stemp + "*" + s;
+                }
+                j++;
+            }
+            if(i==0){
+                result = stemp;
+            }else {
+                result = result + "+" + stemp;
+            }
+            i++;
+        }
+        return result;
+    }
+
+    private static void descartes(List<List<String>> dimvalue, List<List<String>> result, int layer, List<String> curList) {
+        if (layer < dimvalue.size() - 1) {
+            if (dimvalue.get(layer).size() == 0) {
+                descartes(dimvalue, result, layer + 1, curList);
+            } else {
+                for (int i = 0; i < dimvalue.get(layer).size(); i++) {
+                    List<String> list = new ArrayList<String>(curList);
+                    list.add(dimvalue.get(layer).get(i));
+                    descartes(dimvalue, result, layer + 1, list);
+                }
+            }
+        } else if (layer == dimvalue.size() - 1) {
+            if (dimvalue.get(layer).size() == 0) {
+                result.add(curList);
+            } else {
+                for (int i = 0; i < dimvalue.get(layer).size(); i++) {
+                    List<String> list = new ArrayList<String>(curList);
+                    list.add(dimvalue.get(layer).get(i));
+                    result.add(list);
+                }
+            }
         }
     }
 
+
+
+
+
     private static int getPriority(String s) throws Exception {
-        if(s==null) return 0;
+        if(s==null) {
+            return 0;
+        }
         switch(s) {
             case "(":return 1;
             case "+":return 2;
